@@ -1,0 +1,746 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>REQUEST BUNKER B40 KKR</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HOME -->
+    <div id="homePage">
+
+        <div class="dashboard-title">
+            Dashboard Port Operation PTK Cilacap
+        </div>
+
+        <div
+            class="hero hero-btn"
+            id="btnDashboard"
+            onclick="showRobPage()">
+
+
+            <div class="hero-icon">🚢</div>
+
+            <div class="hero-title">
+                DAILY ROB REPORT
+            </div>
+
+            <div class="hero-subtitle">
+                Monitoring & Input Data ROB Harian Kapal
+            </div>
+
+        </div>
+
+        <div class="menu-grid">
+
+            <button
+                class="menu-btn"
+                id="btnRequestBunker"
+                onclick="showRequestPage()">
+
+                ⛽ REQUEST BUNKER B40
+
+            </button>
+
+            <button
+                class="menu-btn"
+                id="btnDrum"
+                onclick="showDrumPage()">
+
+                🛢 PELAPORAN DRUM KOSONG
+
+            </button>
+
+            <button
+                class="menu-btn"
+                id="btnPinjam"
+                onclick="showPinjamPage()">
+
+                📋 CATATAN PEMINJAMAN DRUM
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="drumPage"
+        class="container"
+        style="display:none;">
+
+        <div class="page-header">
+
+            <div class="page-title">
+                PELAPORAN DRUM KOSONG
+            </div>
+
+            <button
+                class="header-close"
+                onclick="closeDrumPage()">
+                ✕
+            </button>
+
+        </div>
+
+    <div class="drum-dashboard">
+
+        <!-- KPI -->
+        <div class="drum-kpi">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    JUMLAH DRUM KOSONG
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="totalDrumKosong">
+
+                    0
+
+                </div>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    PERSENTASE DRUM KOSONG
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="persentaseDrum">
+
+                    0%
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- REKOMENDASI -->
+        <div class="recommend-card">
+
+            <div class="recommend-title">
+                DRUM YANG HARUS DIISI
+            </div>
+
+            <div
+                id="recommendList"
+                class="recommend-list">
+
+            </div>
+
+        </div>
+
+        <!-- DAFTAR KAPAL -->
+        <div
+            id="drumShipContainer"
+            class="drum-ship-grid">
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="pinjamPage" class="container" style="display:none;">
+
+    <div class="page-header">
+        <div class="page-title">CATATAN PEMINJAMAN DRUM</div>
+        <button class="header-close" onclick="closePinjamPage()">✕</button>
+    </div>
+
+    <!-- KPI row: Peminjam Aktif & Jumlah Drum yang Dipinjam -->
+    <div class="pinjam-kpi">
+
+        <div class="kpi-card">
+            <div class="kpi-title">Peminjam Aktif</div>
+            <div class="kpi-value" id="kpiPeminjamAktif">0</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-title">Jumlah Drum yang Dipinjam</div>
+            <div class="kpi-value" id="kpiJumlahDrumPinjam">0</div>
+        </div>
+
+    </div>
+
+    <div class="pinjam-form-card">
+
+        <div class="section-title">Catat Peminjaman</div>
+
+        <div class="pinjam-form-row">
+
+            <div class="input-group">
+                <label>Tanggal</label>
+                <input type="date" id="pinjamTanggal" required>
+            </div>
+
+            <div class="input-group">
+                <label>Peminjam</label>
+                <select id="pinjamPeminjam" required>
+                    <option value="">Pilih...</option>
+                    <option>TETRA</option>
+                    <option>CILACAP</option>
+                    <option>RIB 4</option>
+                    <option>MARINE 1</option>
+                    <option>MARINE 2</option>
+                    <option>SLICKBAR 03</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Meminjamkan</label>
+                <select id="pinjamMeminjamkan" required>
+                    <option value="">Pilih...</option>
+                    <option>TETRA</option>
+                    <option>CILACAP</option>
+                    <option>RIB 4</option>
+                    <option>MARINE 1</option>
+                    <option>MARINE 2</option>
+                    <option>SLICKBAR 03</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Jumlah</label>
+                <input type="number" id="pinjamJumlah" min="1" value="1" required>
+            </div>
+
+            <div class="input-group">
+                <label>&nbsp;</label>
+                <button class="btn-simpan" onclick="submitPinjam()">Simpan</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <h3>Peminjam Aktif</h3>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Peminjam</th>
+                    <th>Meminjamkan</th>
+                    <th>Jumlah</th>
+                    <th>Aksi</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="pinjamTableBody">
+
+            </tbody>
+
+        </table>
+
+        <div class="table-action-row">
+            <button class="btn-secondary" onclick="showRiwayatPage()">Lihat Semua History</button>
+        </div>
+
+    </div>
+
+</div>
+<!-- ===========================
+     HALAMAN RIWAYAT
+=========================== -->
+
+<div id="riwayatPage"
+     class="container"
+     style="display:none;">
+
+    <div class="page-header">
+
+        <div class="page-title">
+            History Peminjaman Drum
+        </div>
+
+        <button
+            class="header-close"
+            onclick="closeRiwayatPage()">
+            ✕
+        </button>
+
+    </div>
+
+    <div class="pinjam-form-card">
+
+        <div class="section-title">
+            Riwayat Peminjaman
+        </div>
+
+        <table class="pinjam-table">
+
+            <thead>
+
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Peminjam</th>
+                    <th>Meminjamkan</th>
+                    <th>Jumlah</th>
+                    <th>Tanggal Kembali</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="riwayatTableBody">
+
+                <tr>
+                    <td colspan="6">
+                        Belum ada data
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- HALAMAN ROB -->
+<div id="robPage"
+     class="container"
+     style="display:none;">
+
+    <div class="page-header">
+
+        <div class="page-title">
+            DAILY ROB REPORT
+        </div>
+
+        <button class="header-close"
+                onclick="closeRobPage()">
+            ✕
+        </button>
+
+    </div>
+
+    <div class="rob-page-shell">
+
+        <div class="rob-screen" id="robCalendarScreen">
+            <div class="rob-calendar-card">
+                <div class="rob-calendar-header">
+                    <div>
+                        <div class="rob-calendar-label">Kalender Report</div>
+                        <div class="rob-month-title" id="robMonthTitle"></div>
+                    </div>
+                    <div class="rob-calendar-nav">
+                        <button class="rob-nav-btn" type="button" onclick="changeRobMonth(-1)">‹</button>
+                        <button class="rob-nav-btn" type="button" onclick="goToCurrentRobMonth()">Hari Ini</button>
+                        <button class="rob-nav-btn" type="button" onclick="changeRobMonth(1)">›</button>
+                    </div>
+                </div>
+
+                <div class="rob-weekdays">
+                    <div>Sen</div>
+                    <div>Sel</div>
+                    <div>Rab</div>
+                    <div>Kam</div>
+                    <div>Jum</div>
+                    <div>Sab</div>
+                    <div>Min</div>
+                </div>
+
+                <div class="rob-calendar-grid" id="robCalendarGrid"></div>
+            </div>
+        </div>
+
+        <div class="rob-screen" id="robDetailScreen" style="display:none;">
+            <div class="rob-detail-card" id="robDetailCard">
+                <div class="rob-detail-header">
+                    <div>
+                        <div class="rob-detail-label">Report Terpilih</div>
+                        <div class="rob-selected-date" id="robSelectedDateText"></div>
+                    </div>
+                    <button class="rob-add-btn" type="button" onclick="openRobShipSelection()">+</button>
+                </div>
+
+                <div class="rob-table-wrap">
+                    <table class="rob-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Jenis BBM</th>
+                                <th>ROB On Board</th>
+                                <th>ROB Out Board</th>
+                                <th>Total ROB</th>
+                                <th>Pelapor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="robTableBody">
+                            <tr>
+                                <td colspan="7">Belum ada data report untuk tanggal ini.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="rob-screen" id="robShipScreen" style="display:none;">
+            <div class="rob-card">
+                <div class="rob-stage-header">
+                    <div>
+                        <div class="rob-stage-label">Tambah Report ROB</div>
+                        <div class="rob-stage-title">Pilih Kapal</div>
+                    </div>
+                    <button class="rob-modal-close" type="button" onclick="showRobCalendarFromStep()">✕</button>
+                </div>
+                <div class="rob-ship-grid" id="robShipGrid"></div>
+            </div>
+        </div>
+
+        <div class="rob-screen" id="robFormScreen" style="display:none;">
+            <div class="rob-card">
+                <div class="rob-stage-header">
+                    <div>
+                        <div class="rob-stage-label">Tambah Report ROB</div>
+                        <div class="rob-stage-title">Detail Report</div>
+                    </div>
+                    <button class="rob-modal-close" type="button" onclick="showRobCalendarFromStep()">✕</button>
+                </div>
+
+                <div class="rob-form-summary">
+                    <div><strong>Tanggal Report:</strong> <span id="robFormDateLabel"></span></div>
+                    <div><strong>Nama Kapal:</strong> <span id="robFormShipLabel"></span></div>
+                    <div class="rob-form-bbm"><strong>Jenis BBM:</strong> <span id="robFormBbmLabel"></span></div>
+                </div>
+
+                <form id="robEntryForm" onsubmit="submitRobEntry(event)">
+                    <input type="hidden" id="robEntryDate">
+
+                    <div class="rob-form-grid">
+                        <div class="input-group">
+                            <label>ROB On Board</label>
+                            <input type="number" id="robEntryOnBoard" min="0" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>ROB Out Board</label>
+                            <input type="number" id="robEntryOutBoard" min="0">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Total ROB</label>
+                            <input type="number" id="robEntryTotal" readonly>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Pelapor</label>
+                            <input type="text" id="robEntryPelapor" required>
+                        </div>
+                    </div>
+
+                    <div class="rob-modal-actions">
+                        <button class="btn-secondary" type="button" onclick="showRobCalendarFromStep()">Batal</button>
+                        <button class="btn-simpan" type="submit">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="container">
+    
+        <!-request bunker b40>
+        <div id="shipPage" style="display:none;">
+
+            <div class="page-header">
+
+                <div class="page-title">
+                    REQUEST BUNKER B40 KKR
+                </div>
+
+                <button class="header-close" onclick="backHome()">
+                    ✕
+                </button>
+
+            </div>
+
+            <div class="tank-dashboard">
+
+                <div class="tank-header">
+
+                    <div class="tank-title">
+                        STOK TANGKI DARAT 5 KL
+                    </div>
+
+                    <button class="btnTambah"
+                    onclick="openTankForm()">
+                        +
+                    </button>
+
+                </div>
+
+                <div class="tank-content">
+
+                    <div class="gaugeBox">
+
+                        <canvas id="fuelGauge"
+                        width="300"
+                        height="170">
+                        </canvas>
+
+                    </div>
+
+                    <div class="infoBox">
+
+                        <h2 id="stokLiter">
+                            3250 L
+                        </h2>
+
+                        <p>
+                            Kapasitas : 5000 Liter
+                        </p>
+
+                        <p>
+                            Persentase :
+                            <span id="persenTank">
+                                65%
+                            </span>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="ship-grid">
+
+                <div class="ship-card" onclick="openShip('MB. Transko Patin 01')">
+                    <div class="alert" id="alert-MB. Transko Patin 01">❗</div>
+                    <div class="ship-name">MB. Transko Patin 01</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('MB. Transko Patin 11')">
+                    <div class="alert" id="alert-MB. Transko Patin 11">❗</div>
+                    <div class="ship-name">MB. Transko Patin 11</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('MB. Transko Patin 12')">
+                    <div class="alert" id="alert-MB. Transko Patin 12">❗</div>
+                    <div class="ship-name">MB. Transko Patin 12</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('MB. Transko Sepat 12')">
+                    <div class="alert" id="alert-MB. Transko Sepat 12">❗</div>
+                    <div class="ship-name">MB. Transko Sepat 12</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('MB. Jaya Kesuma I')">
+                    <div class="alert" id="alert-MB. Jaya Kesuma I">❗</div>
+                    <div class="ship-name">MB. Jaya Kesuma I</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('MB. Jaya Kesuma II')">
+                    <div class="alert" id="alert-MB. Jaya Kesuma II">❗</div>
+                    <div class="ship-name">MB. Jaya Kesuma II</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('RIB. Transko Makarel 903')">
+                    <div class="alert" id="alert-RIB. Transko Makarel 903">❗</div>
+                    <div class="ship-name">RIB. Transko Makarel 903</div>
+                </div>
+
+                <div class="ship-card" onclick="openShip('RIB. Transko Makarel 905')">
+                    <div class="alert" id="alert-RIB. Transko Makarel 905">❗</div>
+                    <div class="ship-name">RIB. Transko Makarel 905</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="form-container" id="formPage">
+
+            <button class="close-btn" onclick="closeForm()">✕</button>
+
+            <div class="form-title" id="shipTitle"></div>
+
+            <form id="requestForm">
+
+                <input type="hidden" id="requestId">
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>Jumlah Permintaan (Liter)</label>
+                        <input type="number" id="permintaan" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>ROB (Liter)</label>
+                        <input type="number" id="rob" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>Rencana Bunker</label>
+                        <input type="datetime-local" id="rencana" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Upload Request List</label>
+                        <input type="file" accept=".pdf,image/*" id="file" required>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-submit"
+                    id="btnRequest">
+                    KIRIM REQUEST
+                </button>
+
+            </form>
+
+            <!-- REALISASI -->
+            <div id="realisasiSection" class="hidden">
+
+                <div class="section-title">
+                    REALISASI BUNKER B40 KKR
+                </div>
+
+                <div class="row">
+
+                    <div class="input-group">
+                        <label>Tanggal Bunker</label>
+                        <input type="datetime-local" id="tanggalBunker" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Realisasi Bunker (Liter)</label>
+                        <input type="number" id="realisasiLiter" min="1" step="1" required>
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+                    <label>Petugas</label>
+
+                    <input
+                        list="petugasList"
+                        id="petugas"
+                        autocomplete="off"
+                        required
+                        oninput="this.setCustomValidity('')"
+                    >
+
+                    <datalist id="petugasList">
+                        <option value="Adji"> 
+                        <option value="Agus"> 
+                        <option value="Andika"> 
+                        <option value="Aryo"> 
+                        <option value="Budi"> 
+                        <option value="Ivan"> 
+                        <option value="Usep">
+                        <option value="Yudi"> 
+                        <option value="Zaenal"> 
+                    </datalist>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-submit"
+                    id="btnRealisasi"
+                    onclick="submitRealisasi()"
+                >
+                    KIRIM REALISASI
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="form-container" id="tankForm" style="display:none;">
+
+                <button class="close-btn" onclick="closeTankForm()">✕</button>
+
+                <div class="form-title">
+                    PENGISIAN TANGKI DARAT
+                </div>
+
+                <div class="row">
+
+                    <div class="input-group">
+                        <label>Tanggal Pengisian</label>
+                        <input type="datetime-local" id="tankTanggal" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Jumlah Pengisian (Liter)</label>
+                        <input type="number" id="tankJumlah" required>
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Petugas</label>
+
+                    <select id="tankPetugas" required>
+                        <option value="">Pilih Petugas</option>
+                        <option>Adji</option>
+                        <option>Agus</option>
+                        <option>Andika</option>
+                        <option>Aryo</option>
+                        <option>Budi</option>
+                        <option>Ivan</option>
+                        <option>Usep</option>
+                        <option>Yudi</option>
+                        <option>Zaenal</option>
+                    </select>
+
+                </div>
+
+                <button
+                    class="btn-submit"
+                    onclick="submitTank()">
+                    KIRIM PENGISIAN
+                </button>
+
+            </div>
+
+        </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay">
+        <div class="popup-box">
+            <div class="loader" id="loader"></div>
+            <div class="checkmark" id="checkmark">✓</div>
+            <div class="success-text" id="successText">
+                Realisasi bunker berhasil disimpan
+            </div>
+        </div>
+    </div>
+<div id="loadingOverlay" class="overlay">
+    <div class="popup">
+        <div class="spinner"></div>
+        <p>Menyimpan data...</p>
+    </div>
+</div>
+
+<script src="script.js"></script>   
+
+</body>
+</html>
