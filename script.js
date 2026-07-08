@@ -1,6 +1,7 @@
 let currentShip = "";
 let stokTangki = 0;
 let drumData = [];
+let requestData = {};
 const WEB_APP_URL ="https://script.google.com/macros/s/AKfycbzDBifsxhcRjKJNrG7qsk_gY2JwBuqViJuUX0Mbg8fDtzxBEwc4TY2HpNVHU68coWd5/exec";
 let isSubmittingRequest = false;
 let robCurrentMonth = new Date();
@@ -646,21 +647,6 @@ function resetMenu(){
 
 }
 
-function loadRobReportsStorage(){
-    try {
-        const saved = localStorage.getItem("robReportsData");
-        if (saved) {
-            robReports = JSON.parse(saved);
-        }
-    } catch (error) {
-        robReports = {};
-    }
-}
-
-function saveRobReports(){
-    localStorage.setItem("robReportsData", JSON.stringify(robReports));
-}
-
 function formatRobDateKey(date){
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -716,17 +702,6 @@ function isRobDateClickable(date) {
 }
 
 function loadRobMasterData(){
-    const stored = localStorage.getItem("robMasterKapalData");
-    if (stored) {
-        try {
-            robMasterKapal = JSON.parse(stored);
-            renderRobShipList();
-            return;
-        } catch (error) {
-            robMasterKapal = [];
-        }
-    }
-
     fetch(WEB_APP_URL + "?action=master_kapal")
         .then(response => response.text())
         .then(text => {
@@ -740,13 +715,10 @@ function loadRobMasterData(){
             } catch (error) {
                 robMasterKapal = buildRobFallbackMaster();
             }
-
-            localStorage.setItem("robMasterKapalData", JSON.stringify(robMasterKapal));
             renderRobShipList();
         })
         .catch(() => {
             robMasterKapal = buildRobFallbackMaster();
-            localStorage.setItem("robMasterKapalData", JSON.stringify(robMasterKapal));
             renderRobShipList();
         });
 }
@@ -814,7 +786,7 @@ function renderRobCalendar(){
         const isSelected = isCurrentMonth && isSameRobDate(currentDate, robSelectedDate);
         const isClickable = isCurrentMonth && isRobDateClickable(currentDate);
         const dateKey = formatRobDateKey(currentDate);
-        const hasData = Boolean(robReports[dateKey] && robReports[dateKey].length > 0);
+        const hasData = false;
 
         const cell = document.createElement("button");
         cell.type = "button";
@@ -851,36 +823,57 @@ function goToCurrentRobMonth(){
     renderRobViews();
 }
 
-function renderRobDetail(){
-    const detailText = document.getElementById("robSelectedDateText");
-    const body = document.getElementById("robTableBody");
+function renderRobDetail() {
+
+    const detailText =
+        document.getElementById("robSelectedDateText");
+
+    const body =
+        document.getElementById("robTableBody");
 
     if (!detailText || !body) return;
 
-    detailText.textContent = formatRobDisplayDate(robSelectedDate);
+    detailText.textContent =
+        formatRobDisplayDate(robSelectedDate);
 
-    const dateKey = formatRobDateKey(robSelectedDate);
-    const entries = robReports[dateKey] || [];
+    const tanggal =
+        formatRobDateKey(robSelectedDate);
 
-    if (entries.length === 0) {
-        body.innerHTML = '<tr><td colspan="7">Belum ada data report untuk tanggal ini.</td></tr>';
-        return;
-    }
+    fetch(WEB_APP_URL + "?action=rob_harian&tanggal=" + tanggal)
 
-    body.innerHTML = entries.map((item, index) => {
-        const total = Number(item.robOnBoard || 0) + Number(item.robOutBoard || 0);
-        return `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${item.nama || "-"}</td>
-                <td>${item.jenisBbm || "-"}</td>
-                <td>${item.robOnBoard || 0}</td>
-                <td>${item.robOutBoard || 0}</td>
-                <td>${total}</td>
-                <td>${item.pelapor || "-"}</td>
-            </tr>
-        `;
-    }).join("");
+        .then(res => res.json())
+
+        .then(data => {
+
+            if (!Array.isArray(data) || data.length === 0) {
+
+                body.innerHTML =
+                    '<tr><td colspan="7">Belum ada data.</td></tr>';
+
+                return;
+
+            }
+
+            body.innerHTML = "";
+
+            data.forEach((item, index) => {
+
+                body.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.namaKapal}</td>
+                    <td>${item.jenisBbm}</td>
+                    <td>${item.robOnBoard}</td>
+                    <td>${item.robOutBoard}</td>
+                    <td>${item.totalRob}</td>
+                    <td>${item.pelapor}</td>
+                </tr>
+                `;
+
+            });
+
+        });
+
 }
 
 function loadRobStatus(){
