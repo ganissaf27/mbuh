@@ -2,7 +2,7 @@ let currentShip = "";
 let stokTangki = 0;
 let drumData = [];
 let requestData = {};
-const WEB_APP_URL ="https://script.google.com/macros/s/AKfycbzDBifsxhcRjKJNrG7qsk_gY2JwBuqViJuUX0Mbg8fDtzxBEwc4TY2HpNVHU68coWd5/exec";
+const WEB_APP_URL ="https://script.google.com/macros/s/AKfycbwCjBJQB3MgdBKa2FTH8ZmKXtfXmq1FhomVgcGWTQkUqQQMFnTqC7qSD-ft-_eZtMrS/exec";
 let isSubmittingRequest = false;
 let robCurrentMonth = new Date();
 let robSelectedDate = new Date();
@@ -991,6 +991,8 @@ function openRobShipSelection(){
 
     robCurrentStep = "ship";
 
+    renderRobViews();
+
     loadRobStatus();
 
 }
@@ -1059,6 +1061,7 @@ function closeRobModal(){
 }
 
 function submitRobEntry(event){
+    console.log("submitRobEntry berjalan");
     event.preventDefault();
 
     const dateKey = document.getElementById("robEntryDate").value;
@@ -1097,12 +1100,6 @@ function submitRobEntry(event){
         pelapor,
         timestamp: new Date().toISOString()
     };
-
-    if (!robReports[dateKey]) {
-        robReports[dateKey] = [];
-    }
-
-    robReports[dateKey].push(entry);
 
     const payload = {
         action: "save_rob_report",
